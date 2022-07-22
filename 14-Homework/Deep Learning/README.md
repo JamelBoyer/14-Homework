@@ -14,7 +14,7 @@ You will need to:
 
 - - -
 
-### Files
+## Files
 
 [Closing Prices Starter Notebook](Starter_Code/lstm_stock_predictor_closing.ipynb)
 
@@ -26,17 +26,56 @@ You will need to:
 
 ### Prepare the data for training and testing
 
-Use the starter code as a guide to create a Jupyter Notebook for each RNN. The starter code contains a function to create the window of time for the data in each dataset.
+### Use the starter code as a guide to create a Jupyter Notebook for each RNN. The starter code contains a function to create the window of time for the data in each dataset
 
-For the Fear and Greed model, you will use the FNG values to try and predict the closing price. A function is provided in the notebook to help with this.
+* > [Closing Prices Starter Notebook](Starter_Code/lstm_stock_predictor_closing.ipynb)
 
-For the closing price model, you will use previous closing prices to try and predict the next closing price. A function is provided in the notebook to help with this.
+### For the Fear and Greed model, you will use the FNG values to try and predict the closing price. A function is provided in the notebook to help with this
 
-Each model will need to use 70% of the data for training and 30% of the data for testing.
+* > [FNG Starter Notebook](Starter_Code/lstm_stock_predictor_fng.ipynb)
+
+### For the closing price model, you will use previous closing prices to try and predict the next closing price. A function is provided in the notebook to help with this
+
+* > I created a DataFrame of Real and Predicted values:
+
+### (Bold Heading)Code 1
+
+* > stocks = pd.DataFrame({
+    "Real": real_prices.ravel(),
+    "Predicted": predicted_prices.ravel()
+}, index = df.index[-len(real_prices): ])
+stocks.head()
+
+### Each model will need to use 70% of the data for training and 30% of the data for testing
+
+* > For each model, 70% of the data was used for training and the rest for testing.
+
+### (Bold Heading)Code 2
+
+split = int(0.7 * len(X))
+X_train = X[: split]
+X_test = X[split:]
+y_train = y[: split]
+y_test = y[split:]
 
 Apply a MinMaxScaler to the X and y values to scale the data for the model.
 
+* > I imported sklearn.preprocessing and MinMaxScaler and scaled the data between 0 and 1 Use the MinMaxScaler to scale data between 0 and 1
+
+### (Bold Heading)Code 3  
+
+* > scaler = MinMaxScaler()
+
 Finally, reshape the X_train and X_test values to fit the model's requirement of samples, time steps, and features. (*example:* `X_train = X_train.reshape((X_train.shape[0], X_train.shape[1], 1))`)
+
+* > I reshaped the features for the model
+
+### (Bold Heading)Code 4
+
+X_train = X_train.reshape((X_train.shape[0], X_train.shape[1], 1))
+X_test = X_test.reshape((X_test.shape[0], X_test.shape[1], 1))
+print (f"X_train sample values:\n{X_train[:5]} \n")
+print (f"X_test sample values:\n{X_test[:5]}")
 
 ### Build and train custom LSTM RNNs
 
@@ -50,13 +89,41 @@ Finally, use the testing data to evaluate each model and compare the performance
 
 Use the above to answer the following:
 
-> Which model has a lower loss?
->
-> Which model tracks the actual values better over time?
->
-> Which window size works best for the model?
+## Which model has a lower loss?
 
-- - -
+* > Based on the verbose output of the training data which includes the loss and accuracy of the model, FGN had a higher accuracy rate of %25 (closing prices %15) when the window size of both models is 5. 
+
+### (Bold Heading) Output 1
+
+* > Performance Model: Window of closing prices
+
+5/5 [==============================] - 1s 5ms/step - loss: 0.1585
+0.15848222374916077
+
+## (Bold Heading) Output 2
+
+* > Performance Model: FGN Indicators
+
+6/6 [==============================] - 1s 3ms/step - loss: 0.2593
+0.25925248861312866
+
+## Which model tracks the actual values better over time?
+
+* > As you can see from the charts below, neither model has been tracked relatively efficiently. Closing prices followed more closely, whatever the size of the window.
+
+![Window of closing prices!](https://github.com/JamelBoyer/14-Homework/blob/main/Images/ClosingPrices.jpg)
+
+![FGN Indicators!](https://github.com/JamelBoyer/14-Homework/blob/main/Images/FGN.jpg)
+
+## Which window size works best for the model?
+
+* > With the closing prices model lower window sizes tracked better overtime. Below is an example of wwindow size 1(see below).
+
+![Window of closing prices!](https://github.com/JamelBoyer/14-Homework/blob/main/Images/ClosingPrices.jpg)
+
+* > Same pheonomen with the FNG Model. Below is a plot of window size 2.
+
+![FNG Model!](https://github.com/JamelBoyer/14-Homework/blob/main/Images/Window_size_2.jpg)
 
 ### Resources
 
@@ -65,72 +132,3 @@ Use the above to answer the following:
 [Illustrated Guide to LSTMs](https://towardsdatascience.com/illustrated-guide-to-lstms-and-gru-s-a-step-by-step-explanation-44e9eb85bf21)
 
 [Stanford's RNN Cheatsheet](https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-recurrent-neural-networks)
-
-- - -
-
-### Hints and Considerations
-
-Experiment with the model architecture and parameters to see which provides the best results, but be sure to use the same architecture and parameters when comparing each model.
-
-For training, use at least 10 estimators for both models.
-
-### Submission
-
-* Create Jupyter Notebooks for the homework and host the notebooks on GitHub.
-
-* Include a Markdown that summarizes your homework and include this report in your GitHub repository.
-
-* Submit the link to your GitHub project to Bootcamp Spot.
-
-- - -
-### Requirements
-
-#### Data Prep for Training and Testing  (26 points)
-
-##### To receive all points, your code must:
-
-* Use the FNG values to predict future closing prices. (7 points)
-* Use the past closing prices to predict future closing prices. (7 points)
-* Apply the MinMaxScaler to the X and Y values to scale the data for the model. (6 points)
-* Reshape X_train and X_test to fit the model requirements (samples, time steps, features). (6 points)
-
-#### Build and train custom LSTM RNNS (20 points)
-
-##### To receive all points, your code must:
-
-* Create a notebook to fit the data using FNG Values. (10 points)
-* Create a notebook to fit the data using closing prices. (10 points)
-
-#### Evaluate Model Performance  (24 points)
-
-##### To receive all points, your code must:
-
-* Determine which model had the lowest loss. (8 points)
-* Determine which model tracks the actual values best over time. (8 points)
-* Determine the appropriate Window Size for the model. (8 points)
-
-#### Coding Conventions and Formatting (10 points)
-
-##### To receive all points, your code must:
-
-* Place imports at the beginning of the file, just after any module comments and docstrings and before module globals and constants. (3 points)
-* Name functions and variables with lowercase characters and with words separated by underscores. (2 points)
-* Follow Don't Repeat Yourself (DRY) principles by creating maintainable and reusable code. (3 points)
-* Use concise logic and creative engineering where possible. (2 points)
-
-#### Deployment and Submission (10 points)
-
-##### To receive all points, you must:
-
-* Submit a link to a GitHub repository that’s cloned to your local machine and contains your files. (5 points)
-* Include appropriate commit messages in your files. (5 points)
-
-#### Code Comments (10 points)
-
-##### To receive all points, your code must:
-
-* Be well commented with concise, relevant notes that other developers can understand. (10 points)
-
-- - -
-
-© 2019 Trilogy Education Services, a 2U, Inc. brand. All Rights Reserved.
